@@ -22,8 +22,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Board Setting")
 	TSubclassOf<AActor> ElementClass;
+	
 
-	TArray<TArray<AActor*>> BoardArray;
+	TArray<TArray<TObjectPtr<AActor>>> BoardArray;
+
+	
 	
 	// Sets default values for this actor's properties
 	ABBoard();

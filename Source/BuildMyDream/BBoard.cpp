@@ -3,6 +3,8 @@
 
 #include "BBoard.h"
 
+#include "BElement.h"
+
 // Sets default values
 ABBoard::ABBoard()
 {
@@ -28,6 +30,8 @@ bool ABBoard::GenerateElement(int32 Row, int32 Col)
 		FVector Location = GetActorLocation() + FVector(Row * TileSize, 0, Col * TileSize);
 		FRotator Rotation = FRotator(0, 0, 0);
 		AActor* NewElement = GetWorld()->SpawnActor<AActor>(ElementClass, Location, Rotation);
+		ABElement* Element =  Cast<ABElement>(NewElement);
+		Element->Board = this;
 		BoardArray[Row][Col] = NewElement;
 		return true;
 	}else

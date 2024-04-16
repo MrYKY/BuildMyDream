@@ -13,4 +13,18 @@ UCLASS()
 class BUILDMYDREAM_API ABPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+
+	TObjectPtr<AActor> DraggingPiece = nullptr;
+
+	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
+	virtual void Tick(float DeltaSeconds) override;
+
+	void OnLeftRelease();
+	void OnLeftClick();
+
+private:
+	bool bIsDragging = false;
 };
