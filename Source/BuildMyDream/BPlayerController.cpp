@@ -8,6 +8,7 @@
 void ABPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	TickDelegate.BindUFunction(this, FName("FollowCursor"));
     
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
@@ -38,6 +39,7 @@ void ABPlayerController::OnLeftClick()
 				Element->OnClicked();
 				bIsDragging = true;
 				DraggingPiece = Element;
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, TickDelegate, 1.0f / 60.0f, true);
 			}
 		}
 	}
@@ -46,6 +48,7 @@ void ABPlayerController::OnLeftClick()
 void ABPlayerController::OnLeftRelease()
 {
 	bIsDragging = false;
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	FHitResult HitResult;
 	GetHitResultUnderCursor(ECC_Visibility, false, HitResult); // 获取鼠标光标下的命中结果
 	if (HitResult.bBlockingHit)
@@ -53,31 +56,47 @@ void ABPlayerController::OnLeftRelease()
 		AActor* ClickedActor = HitResult.GetActor();
 		if (ClickedActor)
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Actor Hit"));
 			ABElement* Element = Cast<ABElement>(ClickedActor);
 			if (Element)
 			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Hit Actor Is Element"));
 				Element->OnReleased();
 			}
 		}
 	}
-	bIsDragging = false;
+}
+
+void ABPlayerController::FollowCursor() const
+{
+	FHitResult HitResult;
+	GetHitResultUnderCursor(ECC_Visibility, false, HitResult); // 获取鼠标光标下的命中结果
+	if (HitResult.bBlockingHit)
+	{
+		FVector CursorLocation, CursorDirection;
+		if (DeprojectMousePositionToWorld(CursorLocation, CursorDirection))
+		{
+			FVector NewLocation(CursorLocation.X, 100.0f, CursorLocation.Z-10.0f);
+			DraggingPiece->SetActorLocation(NewLocation);
+		}
+	}
 }
 
 void ABPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	if (bIsDragging)
-	{
-		FHitResult HitResult;
-		GetHitResultUnderCursor(ECC_Visibility, false, HitResult); // 获取鼠标光标下的命中结果
-		if (HitResult.bBlockingHit)
-		{
-			FVector CursorLocation, CursorDirection;
-			if (DeprojectMousePositionToWorld(CursorLocation, CursorDirection))
-			{
-				FVector NewLocation(CursorLocation.X, 100.0f, CursorLocation.Z);
-				DraggingPiece->SetActorLocation(NewLocation);
-			}
-		}
-	}
+	// if (bIsDragging)
+	// {
+	// 	FHitResult HitResult;
+	// 	GetHitResultUnderCursor(ECC_Visibility, false, HitResult); // 获取鼠标光标下的命中结果
+	// 	if (HitResult.bBlockingHit)
+	// 	{
+	// 		FVector CursorLocation, CursorDirection;
+	// 		if (DeprojectMousePositionToWorld(CursorLocation, CursorDirection))
+	// 		{
+	// 			FVector NewLocation(CursorLocation.X, 100.0f, CursorLocation.Z);
+	// 			DraggingPiece->SetActorLocation(NewLocation);
+	// 		}
+	// 	}
+	// }
 }

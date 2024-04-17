@@ -13,4 +13,5 @@ UCLASS()
 class BUILDMYDREAM_API ABGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+	ABGameModeBase();
 };

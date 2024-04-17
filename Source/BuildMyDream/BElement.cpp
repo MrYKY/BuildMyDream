@@ -12,20 +12,21 @@ ABElement::ABElement()
 	// Randomly set the ElementType
 	ElementType = static_cast<EBElementType>(FMath::RandRange(0, 2));
 	ElementMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoardMesh"));
-	RootComponent = ElementMesh;
 
 }
 
 void ABElement::OnClicked()
 {
 	bIsDragging = true;
-	FVector NewLocation(GetActorLocation().X, GetActorLocation().Y+100.0f, GetActorLocation().Z);
-	SetActorLocation(NewLocation);
+	Board->RemoveElement(Row,Col);
+	// FVector NewLocation(GetActorLocation().X, GetActorLocation().Y+100.0f, GetActorLocation().Z);
+	// SetActorLocation(NewLocation);
 }
 
 void ABElement::OnReleased()
 {
 	bIsDragging = false;
+	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MouseRealsed"));
 	Board->PutElement(GetActorLocation(), this);
 }
 

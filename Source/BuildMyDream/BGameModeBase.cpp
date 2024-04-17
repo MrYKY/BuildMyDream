@@ -2,3 +2,8 @@
 
 
 #include "BGameModeBase.h"
+
+ABGameModeBase::ABGameModeBase()
+{
+	DefaultPawnClass = nullptr;
+}

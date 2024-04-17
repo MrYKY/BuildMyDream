@@ -18,11 +18,16 @@ public:
 
 	TObjectPtr<AActor> DraggingPiece = nullptr;
 
+	FTimerDelegate TickDelegate;
+	FTimerHandle TimerHandle;
+
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	virtual void Tick(float DeltaSeconds) override;
 
 	void OnLeftRelease();
+	UFUNCTION()
+	void FollowCursor() const;
 	void OnLeftClick();
 
 private:
