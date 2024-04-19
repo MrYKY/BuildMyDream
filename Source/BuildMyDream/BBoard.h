@@ -58,10 +58,10 @@ public:
 	
 private:
 	void GenerateBoard();
-	TArray<int32> GetRowColByLocation(FVector Location);
+	TArray<int32> GetRowColByLocation(FVector Location) const;
 	void BindDelegates(TObjectPtr<ABElement> Element);
 
-	bool TryMerge();
+	bool TryMerge(TObjectPtr<ABElement> Element,bool bFirstCall);
 
 
 

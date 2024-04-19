@@ -44,6 +44,7 @@ AActor* ABBoard::GenerateElementCell(int32 Row, int32 Col)
 		// Record Element in the Board
 		BoardArray[Row][Col] = Element;
 		--EmptyCellCount;
+		TryMerge(Element,true);
 		return Element;
 	}else
 	{
@@ -107,10 +108,16 @@ bool ABBoard::PutElement(FVector Location, ABElement* Element)
 	{
 		BoardArray[Row][Col] = PElement;
 		--EmptyCellCount;
-		PElement->Row = Row+1;
-		PElement->Col = Col+1;
+		if(Row+1 != PElement->Row || Col+1 != PElement->Col)
+		{
+			PElement->Row = Row+1;
+			PElement->Col = Col+1;
+			GameMode->OnMoveMadeDelegate.Broadcast();
+		}
 		PElement->SetActorLocation(GetActorLocation() + FVector(Row * TileSize + TileSize/2, 0, Col * TileSize+ TileSize/2));
-		GameMode->OnMoveMadeDelegate.Broadcast();
+		
+		
+		TryMerge(PElement, true);
 		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Element Put"));
 		return true;
 	}else{
@@ -128,7 +135,7 @@ void ABBoard::PutElementRes(FVector Location, ABElement* Element)
 	PutElement(Location, Element);
 }
 
-TArray<int32> ABBoard::GetRowColByLocation(FVector Location)
+TArray<int32> ABBoard::GetRowColByLocation(FVector Location) const
 {
 	TArray<int32> RowCol;
 	FVector Origin = GetActorLocation();  // 获取棋盘的原点位置
@@ -152,6 +159,60 @@ void ABBoard::BindDelegates(TObjectPtr<ABElement> Element)
 {
 	Element->OnElementClickedDelegate.AddDynamic(this, &ABBoard::RemoveElementRes);
 	Element->OnElementReleasedDelegate.AddDynamic(this, &ABBoard::PutElementRes);
+}
+
+bool ABBoard::TryMerge(TObjectPtr<ABElement> Element, bool bFirstCall)
+{
+	static TArray<TObjectPtr<ABElement>> MergeArray;
+	EBElementType ElementType = Element->ElementType;
+	int32 Row = Element->Row;
+	int32 Col = Element->Col;
+	MergeArray.Add(Element);
+	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Element Added To Merge Array"));
+	static std::vector<std::vector<bool>> Visited(BoardSize, std::vector<bool>(BoardSize, false));
+	Visited[Row-1][Col-1] = true;
+	const int32 DCol[4] = {0, 0, -1, 1};
+	const int32 DRow[4] = {-1, 1, 0, 0};
+
+	for(int32 i = 0; i < 4; ++i)
+	{
+		int32 NewRow = Row + DRow[i]-1;
+		int32 NewCol = Col + DCol[i]-1;
+		if (NewRow >= 0 && NewRow < BoardSize && NewCol >= 0 && NewCol < BoardSize)
+		{
+			if (BoardArray[NewRow][NewCol] && !Visited[NewRow][NewCol])
+			{
+				if (BoardArray[NewRow][NewCol]->ElementType == ElementType)
+				{
+					Visited[NewRow][NewCol] = true;
+					TryMerge(BoardArray[NewRow][NewCol], false);
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Called Self"));
+				}
+			}
+		}
+	}
+	if(bFirstCall)
+	{
+		if(MergeArray.Num()>=3)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("3 In Neighbourhood"));
+			for(int32 i = 0; i<MergeArray.Num(); ++i)
+			{
+				RemoveElement(MergeArray[i]->Row, MergeArray[i]->Col);
+				MergeArray[i]->Destroy();
+			}
+			MergeArray.Empty();
+			Visited = std::vector<std::vector<bool>>(BoardSize, std::vector<bool>(BoardSize, false));
+			return true;
+		}else{
+			MergeArray.Empty();
+			Visited = std::vector<std::vector<bool>>(BoardSize, std::vector<bool>(BoardSize, false));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Info Reseted"));
+			return false;
+		}
+	}
+
+	return true;
 }
 
 void ABBoard::GenerateBoard()
