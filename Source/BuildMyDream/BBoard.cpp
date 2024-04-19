@@ -4,6 +4,7 @@
 #include "BBoard.h"
 
 #include "BElement.h"
+#include "BGameModeBase.h"
 
 // Sets default values
 ABBoard::ABBoard()
@@ -11,6 +12,8 @@ ABBoard::ABBoard()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	GenerateBoard();
+	EmptyCellCount = BoardSize * BoardSize;
+
 
 }
 
@@ -18,10 +21,11 @@ ABBoard::ABBoard()
 void ABBoard::BeginPlay()
 {
 	Super::BeginPlay();
+	GameMode = Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode());
 	
 }
 
-bool ABBoard::GenerateElement(int32 Row, int32 Col)
+AActor* ABBoard::GenerateElementCell(int32 Row, int32 Col)
 {
 	--Row;
 	--Col;
@@ -31,16 +35,43 @@ bool ABBoard::GenerateElement(int32 Row, int32 Col)
 		FRotator Rotation = FRotator(0, 0, 0);
 		AActor* NewElement = GetWorld()->SpawnActor<AActor>(ElementClass, Location, Rotation);
 		ABElement* Element =  Cast<ABElement>(NewElement);
-		Element->Board = this;
+		// Set Element Mesh
+		Element->SetElementMesh();
+		// Set Element Basic Info
 		Element->Row = Row+1;
 		Element->Col = Col+1;
-		BoardArray[Row][Col] = NewElement;
-		return true;
+		BindDelegates(Element);
+		// Record Element in the Board
+		BoardArray[Row][Col] = Element;
+		--EmptyCellCount;
+		return Element;
 	}else
 	{
-		return false;
+		return nullptr;
 	}
 }
+
+AActor* ABBoard::GenerateElement()
+{
+	int32 Index = FMath::RandRange(1, EmptyCellCount);
+	int32 i = 1;
+	for (int32 Row = 1; Row <= BoardSize; ++Row)
+	{
+		for (int32 Col = 1; Col <= BoardSize; ++Col)
+		{
+			if (BoardArray[Row-1][Col-1] == nullptr)
+			{
+				if (i == Index)
+				{
+					return GenerateElementCell(Row, Col);
+				}
+				++i;
+			}
+		}
+	}
+	return nullptr;
+}
+
 
 bool ABBoard::RemoveElement(int32 Row, int32 Col)
 {
@@ -50,6 +81,7 @@ bool ABBoard::RemoveElement(int32 Row, int32 Col)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Element Removed"));
 		BoardArray[Row][Col] = nullptr;
+		++EmptyCellCount;
 		return true;
 	}else
 	{
@@ -57,7 +89,12 @@ bool ABBoard::RemoveElement(int32 Row, int32 Col)
 	}
 }
 
-bool ABBoard::PutElement(FVector Location, AActor* Element)
+void ABBoard::RemoveElementRes(int32 Row, int32 Col)
+{
+	RemoveElement(Row, Col);
+}
+
+bool ABBoard::PutElement(FVector Location, ABElement* Element)
 {
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Element Put Called"));
 	TArray<int32> RowCol = GetRowColByLocation(Location);
@@ -68,20 +105,27 @@ bool ABBoard::PutElement(FVector Location, AActor* Element)
 	ABElement* PElement =  Cast<ABElement>(Element);
 	if (BoardArray[Row][Col] == nullptr)
 	{
-		BoardArray[Row][Col] = Element;
+		BoardArray[Row][Col] = PElement;
+		--EmptyCellCount;
 		PElement->Row = Row+1;
 		PElement->Col = Col+1;
 		PElement->SetActorLocation(GetActorLocation() + FVector(Row * TileSize + TileSize/2, 0, Col * TileSize+ TileSize/2));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Element Put"));
+		GameMode->OnMoveMadeDelegate.Broadcast();
+		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Element Put"));
 		return true;
 	}else{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can Put On This Place"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't Put On This Place"));
 		Row = PElement->Row-1;
 		Col = PElement->Col-1;
 		PElement->SetActorLocation(GetActorLocation() + FVector(Row * TileSize + TileSize/2, 0, Col * TileSize+ TileSize/2));
 		return false;
 	}
 
+}
+
+void ABBoard::PutElementRes(FVector Location, ABElement* Element)
+{
+	PutElement(Location, Element);
 }
 
 TArray<int32> ABBoard::GetRowColByLocation(FVector Location)
@@ -102,6 +146,12 @@ TArray<int32> ABBoard::GetRowColByLocation(FVector Location)
 	RowCol.Add(Col+1);
 
 	return RowCol;
+}
+
+void ABBoard::BindDelegates(TObjectPtr<ABElement> Element)
+{
+	Element->OnElementClickedDelegate.AddDynamic(this, &ABBoard::RemoveElementRes);
+	Element->OnElementReleasedDelegate.AddDynamic(this, &ABBoard::PutElementRes);
 }
 
 void ABBoard::GenerateBoard()
