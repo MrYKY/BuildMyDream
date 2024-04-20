@@ -104,7 +104,9 @@ bool ABBoard::PutElement(FVector Location, ABElement* Element)
 	--Row;
 	--Col;
 	ABElement* PElement =  Cast<ABElement>(Element);
-	if (BoardArray[Row][Col] == nullptr)
+	if (BoardArray[Row][Col] == nullptr
+		&& abs(PElement->Row-1-Row)<=PElement->MoveRange
+		&& abs(PElement->Col-1-Col)<=PElement->MoveRange)
 	{
 		BoardArray[Row][Col] = PElement;
 		--EmptyCellCount;
@@ -201,6 +203,7 @@ bool ABBoard::TryMerge(TObjectPtr<ABElement> Element, bool bFirstCall)
 				RemoveElement(MergeArray[i]->Row, MergeArray[i]->Col);
 				MergeArray[i]->Destroy();
 			}
+			GameMode->OnMergeMadeDelegate.Broadcast();
 			MergeArray.Empty();
 			Visited = std::vector<std::vector<bool>>(BoardSize, std::vector<bool>(BoardSize, false));
 			return true;

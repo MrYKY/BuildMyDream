@@ -15,8 +15,11 @@ class BUILDMYDREAM_API ABGameStateBase : public AGameStateBase
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(BlueprintReadOnly, Category = "GameState")
 	int32 WheelIndex;
+	UPROPERTY(BlueprintReadOnly, Category = "GameState")
 	int32 EngineIndex;
+	UPROPERTY(BlueprintReadOnly, Category = "GameState")
 	int32 BatteryIndex;
 
 };

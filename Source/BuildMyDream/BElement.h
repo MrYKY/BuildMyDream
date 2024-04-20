@@ -46,20 +46,17 @@ class BUILDMYDREAM_API ABElement : public AActor
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
-	ABElement();
-
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	//Delegates
 	FOnElementClicked OnElementClickedDelegate;
 	FOnElementReleased OnElementReleasedDelegate;
 
+	// Properties
 	UPROPERTY(BlueprintReadOnly, Category = "Element Info")
 	int32 Col;
 	UPROPERTY(BlueprintReadOnly, Category = "Element Info")
 	int32 Row;
+
+	int32 MoveRange = 1;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Element Info")
 	EBElementType ElementType;
@@ -69,23 +66,20 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Element Info")
 	UDataTable* ElementTypeMeshTable;
-	
 
+	// Functions
 	UFUNCTION(BlueprintCallable)
 	void SetElementType(EBElementType NewType);
+	
 	UFUNCTION(BlueprintCallable)
 	void SetElementMesh();
 
+	ABElement();
+	virtual void Tick(float DeltaTime) override;
 	void OnClicked();
 	void OnReleased();
 	void UpdateLocation(FVector Location);
-	
-
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
-private:
-	bool bIsDragging = false;
 };

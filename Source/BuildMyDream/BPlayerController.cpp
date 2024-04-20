@@ -84,18 +84,4 @@ void ABPlayerController::FollowCursor() const
 void ABPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	// if (bIsDragging)
-	// {
-	// 	FHitResult HitResult;
-	// 	GetHitResultUnderCursor(ECC_Visibility, false, HitResult); // 获取鼠标光标下的命中结果
-	// 	if (HitResult.bBlockingHit)
-	// 	{
-	// 		FVector CursorLocation, CursorDirection;
-	// 		if (DeprojectMousePositionToWorld(CursorLocation, CursorDirection))
-	// 		{
-	// 			FVector NewLocation(CursorLocation.X, 100.0f, CursorLocation.Z);
-	// 			DraggingPiece->SetActorLocation(NewLocation);
-	// 		}
-	// 	}
-	// }
 }

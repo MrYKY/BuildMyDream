@@ -16,7 +16,6 @@ ABElement::ABElement()
 
 void ABElement::OnClicked()
 {
-	bIsDragging = true;
 	// Board->RemoveElement(Row,Col);
 	OnElementClickedDelegate.Broadcast(Row,Col);
 	// FVector NewLocation(GetActorLocation().X, GetActorLocation().Y+100.0f, GetActorLocation().Z);
@@ -25,7 +24,6 @@ void ABElement::OnClicked()
 
 void ABElement::OnReleased()
 {
-	bIsDragging = false;
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MouseRealsed"));
 	// Board->PutElement(GetActorLocation(), this);
 	OnElementReleasedDelegate.Broadcast(GetActorLocation(), this);
