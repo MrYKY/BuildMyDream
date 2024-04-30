@@ -32,4 +32,5 @@ public:
 
 private:
 	bool bIsDragging = false;
+	bool bAllowDrag = true;
 };

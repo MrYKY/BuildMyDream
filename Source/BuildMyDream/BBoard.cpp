@@ -35,8 +35,6 @@ AActor* ABBoard::GenerateElementCell(int32 Row, int32 Col)
 		FRotator Rotation = FRotator(0, 0, 0);
 		AActor* NewElement = GetWorld()->SpawnActor<AActor>(ElementClass, Location, Rotation);
 		ABElement* Element =  Cast<ABElement>(NewElement);
-		// Set Element Mesh
-		Element->SetElementMesh();
 		// Set Element Basic Info
 		Element->Row = Row+1;
 		Element->Col = Col+1;
@@ -80,7 +78,7 @@ bool ABBoard::RemoveElement(int32 Row, int32 Col)
 	--Col;
 	if (BoardArray[Row][Col] != nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Element Removed"));
+		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Element Removed"));
 		BoardArray[Row][Col] = nullptr;
 		++EmptyCellCount;
 		return true;
@@ -104,32 +102,48 @@ bool ABBoard::PutElement(FVector Location, ABElement* Element)
 	--Row;
 	--Col;
 	ABElement* PElement =  Cast<ABElement>(Element);
-	if (BoardArray[Row][Col] == nullptr
-		&& abs(PElement->Row-1-Row)<=PElement->MoveRange
-		&& abs(PElement->Col-1-Col)<=PElement->MoveRange)
+
+	if((abs(PElement->Row-1-Row)<=PElement->MoveRange && PElement->Col-1==Col)
+		|| (abs(PElement->Col-1-Col)<=PElement->MoveRange && PElement->Row-1==Row))
 	{
-		BoardArray[Row][Col] = PElement;
-		--EmptyCellCount;
-		if(Row+1 != PElement->Row || Col+1 != PElement->Col)
+		if(BoardArray[Row][Col] == nullptr)
 		{
-			PElement->Row = Row+1;
-			PElement->Col = Col+1;
-			GameMode->OnMoveMadeDelegate.Broadcast();
+			BoardArray[Row][Col] = PElement;
+			--EmptyCellCount;
+			if(Row+1 != PElement->Row || Col+1 != PElement->Col)
+			{
+				PElement->Row = Row+1;
+				PElement->Col = Col+1;
+				GameMode->OnMoveMadeDelegate.Broadcast(PElement);
+			}
+			SetElementLocation(PElement);
+			TryMerge(PElement, true);
+			return true;
+		}else
+		{
+			TObjectPtr<ABElement> SwitchedElement = BoardArray[Row][Col];
+			BoardArray[Row][Col] = PElement;
+			BoardArray[PElement->Row-1][PElement->Col-1] = SwitchedElement;
+			if(Row+1 != PElement->Row || Col+1 != PElement->Col)
+			{
+				SwitchedElement->Row = PElement->Row;
+				SwitchedElement->Col = PElement->Col;
+				PElement->Row = Row+1;
+				PElement->Col = Col+1;
+				GameMode->OnMoveMadeDelegate.Broadcast(PElement);
+			}
+			SetElementLocation(PElement);
+			SetElementLocation(SwitchedElement);
+			TryMerge(PElement, true);
+			TryMerge(SwitchedElement, true);
+			return true;
 		}
-		PElement->SetActorLocation(GetActorLocation() + FVector(Row * TileSize + TileSize/2, 0, Col * TileSize+ TileSize/2));
-		
-		
-		TryMerge(PElement, true);
-		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Element Put"));
-		return true;
-	}else{
+	}else
+	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't Put On This Place"));
-		Row = PElement->Row-1;
-		Col = PElement->Col-1;
-		PElement->SetActorLocation(GetActorLocation() + FVector(Row * TileSize + TileSize/2, 0, Col * TileSize+ TileSize/2));
+		SetElementLocation(PElement);
 		return false;
 	}
-
 }
 
 void ABBoard::PutElementRes(FVector Location, ABElement* Element)
@@ -173,8 +187,8 @@ bool ABBoard::TryMerge(TObjectPtr<ABElement> Element, bool bFirstCall)
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Element Added To Merge Array"));
 	static std::vector<std::vector<bool>> Visited(BoardSize, std::vector<bool>(BoardSize, false));
 	Visited[Row-1][Col-1] = true;
-	const int32 DCol[4] = {0, 0, -1, 1};
-	const int32 DRow[4] = {-1, 1, 0, 0};
+	constexpr int32 DCol[4] = {0, 0, -1, 1};
+	constexpr int32 DRow[4] = {-1, 1, 0, 0};
 
 	for(int32 i = 0; i < 4; ++i)
 	{
@@ -188,7 +202,7 @@ bool ABBoard::TryMerge(TObjectPtr<ABElement> Element, bool bFirstCall)
 				{
 					Visited[NewRow][NewCol] = true;
 					TryMerge(BoardArray[NewRow][NewCol], false);
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Called Self"));
+					// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Called Self"));
 				}
 			}
 		}
@@ -197,20 +211,20 @@ bool ABBoard::TryMerge(TObjectPtr<ABElement> Element, bool bFirstCall)
 	{
 		if(MergeArray.Num()>=3)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("3 In Neighbourhood"));
+			// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("3 In Neighbourhood"));
 			for(int32 i = 0; i<MergeArray.Num(); ++i)
 			{
 				RemoveElement(MergeArray[i]->Row, MergeArray[i]->Col);
+				GameMode->OnMergeMadeDelegate.Broadcast(MergeArray[i]);
 				MergeArray[i]->Destroy();
 			}
-			GameMode->OnMergeMadeDelegate.Broadcast();
 			MergeArray.Empty();
 			Visited = std::vector<std::vector<bool>>(BoardSize, std::vector<bool>(BoardSize, false));
 			return true;
 		}else{
 			MergeArray.Empty();
 			Visited = std::vector<std::vector<bool>>(BoardSize, std::vector<bool>(BoardSize, false));
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Info Reseted"));
+			// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Info Reseted"));
 			return false;
 		}
 	}
@@ -236,5 +250,10 @@ void ABBoard::GenerateBoard()
 void ABBoard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABBoard::SetElementLocation(TObjectPtr<ABElement> Element)
+{
+	Element->SetActorLocation(GetActorLocation() + FVector((Element->Row-1) * TileSize + TileSize/2, 0, (Element->Col-1) * TileSize+ TileSize/2));
 }
 

@@ -14,14 +14,18 @@ ABGameModeBase::ABGameModeBase()
 	OnMergeMadeDelegate.AddDynamic(this, &ABGameModeBase::OnMergeMade);
 }
 
-void ABGameModeBase::OnMoveMade()
+void ABGameModeBase::OnMoveMade(ABElement* MovedElement)
 {
 	Board->GenerateElement();
+	MovedElement->ActHandlerComponent->OnMoved();
 }
 
-void ABGameModeBase::OnMergeMade()
+void ABGameModeBase::OnMergeMade(ABElement* MergedElement)
 {
+	MergedElement->ActHandlerComponent->OnMerged();
 }
+
+
 
 void ABGameModeBase::StartGame()
 {

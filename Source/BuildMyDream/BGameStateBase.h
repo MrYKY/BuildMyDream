@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "BBasicDataStructures.h"
 #include "BGameStateBase.generated.h"
 
 /**
  * 
  */
+
 UCLASS()
 class BUILDMYDREAM_API ABGameStateBase : public AGameStateBase
 {
@@ -16,10 +18,23 @@ class BUILDMYDREAM_API ABGameStateBase : public AGameStateBase
 
 public:
 	UPROPERTY(BlueprintReadOnly, Category = "GameState")
-	int32 WheelIndex;
+	int32 ProductivityIndex=20;
 	UPROPERTY(BlueprintReadOnly, Category = "GameState")
-	int32 EngineIndex;
+	int32 ManpowerIndex;
 	UPROPERTY(BlueprintReadOnly, Category = "GameState")
-	int32 BatteryIndex;
+	int32 TechnologyIndex;
+
+	TMap<EBElementType,int32> ElementLevelMap;
+
+	EBGameStage CurrentGameStage=EBGameStage::PowerStage;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stage Info")
+	UDataTable* GameStageInfoTable;
+	
+	
+	ABGameStateBase();
+	void AddScoreByType(EBElementType ElementType,int32 Score);
+	void SetGameStage(EBGameStage NewGameStage);
+	virtual void BeginPlay() override;
 
 };

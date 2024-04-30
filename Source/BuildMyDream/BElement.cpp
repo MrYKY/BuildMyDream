@@ -2,14 +2,16 @@
 
 
 #include "BElement.h"
-
+#include "BGameStateBase.h"
+#include "GameFramework/GameModeBase.h"
 
 ABElement::ABElement()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	ElementMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoardMesh"));
-	// Randomly set the ElementType
+	ActHandlerComponent = CreateDefaultSubobject<UBActHandlerComponent>(TEXT("ActHandlerComponent"));
+	// Randomly set the ElementType by StageInfo in GameState
 	ElementType = static_cast<EBElementType>(FMath::RandRange(0, 2));
 }
 
@@ -61,11 +63,19 @@ void ABElement::SetElementMesh()
 	}
 }
 
+void ABElement::SetElementLevel(int NewLevel)
+{
+	Level = NewLevel;
+	CurrentScore = Level * Level2ScoreRatio;
+}
+
 
 // Called when the game starts or when spawned
 void ABElement::BeginPlay()
 {
 	Super::BeginPlay();
+	SetElementMesh();
+	SetElementLevel(Cast<ABGameStateBase>(GetWorld()->GetGameState())->ElementLevelMap[ElementType]);
 	
 }
 

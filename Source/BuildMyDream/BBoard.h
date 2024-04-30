@@ -51,16 +51,16 @@ public:
 	UFUNCTION()
 	void PutElementRes(FVector Location, ABElement* Element);
 
-	// Sets default values for this actor's properties
+
 	ABBoard();
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 	
 private:
 	void GenerateBoard();
 	TArray<int32> GetRowColByLocation(FVector Location) const;
 	void BindDelegates(TObjectPtr<ABElement> Element);
-
+	void SetElementLocation(TObjectPtr<ABElement> Element);
 	bool TryMerge(TObjectPtr<ABElement> Element,bool bFirstCall);
 
 

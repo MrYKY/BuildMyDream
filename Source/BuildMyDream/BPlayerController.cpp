@@ -25,6 +25,10 @@ void ABPlayerController::SetupInputComponent()
 
 void ABPlayerController::OnLeftClick()
 {
+	if (!bAllowDrag)
+	{
+		return;
+	}
 	FHitResult HitResult;
 	GetHitResultUnderCursor(ECC_Visibility, false, HitResult); // 获取鼠标光标下的命中结果
 	if (HitResult.bBlockingHit)
@@ -46,6 +50,10 @@ void ABPlayerController::OnLeftClick()
 
 void ABPlayerController::OnLeftRelease()
 {
+	if (!bIsDragging)
+	{
+		return;
+	}
 	bIsDragging = false;
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	FHitResult HitResult;
