@@ -3,6 +3,7 @@
 
 #include "BHUD.h"
 
+#include "BGameModeBase.h"
 #include "Blueprint/UserWidget.h"
 
 void ABHUD::DrawHUD()
@@ -13,7 +14,12 @@ void ABHUD::DrawHUD()
 void ABHUD::BeginPlay()
 {
 	Super::BeginPlay();
-	// Create Main Menu
+	// Bind Delegates
+
+	Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnStartButtonClickedDelegate.AddDynamic(this, &ABHUD::OnStartButtonClicked);
+
+	
+	// Create Widgets
 	if(BMainMenuClass)
 	{
 		BMainMenu = CreateWidget<UUserWidget>(GetWorld(), BMainMenuClass);
@@ -22,14 +28,31 @@ void ABHUD::BeginPlay()
 			BMainMenu->AddToViewport();
 		}
 	}
-	if (BHUD)
+	if (BHUDClass)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Creating HUD..."));
 		BHUD = CreateWidget<UUserWidget>(GetWorld(), BHUDClass);
+	}
+	if (BShopUI)
+	{
+		BShopUI = CreateWidget<UUserWidget>(GetWorld(), BShopUIClass);
 	}
 }
 
+void ABHUD::OnStartButtonClicked()
+{
+	SwitchUI(BHUD, BMainMenu);
+}
+
+
 void ABHUD::SwitchUI(TObjectPtr<UUserWidget> NewUI, TObjectPtr<UUserWidget> OldUI)
 {
-	OldUI->RemoveFromParent();
-	NewUI->AddToViewport();
+	if(OldUI)
+	{
+		OldUI->RemoveFromParent();
+	}
+	if(NewUI)
+	{
+		NewUI->AddToViewport();
+	}
 }

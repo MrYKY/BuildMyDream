@@ -21,7 +21,10 @@ void UBActHandlerComponent::OnMoved()
 	if(Cast<ABElement>(GetOwner())->CurrentScore > Cast<ABElement>(GetOwner())->Level)
 	{
 		Cast<ABElement>(GetOwner())->CurrentScore--;
+		Cast<ABElement>(GetOwner())->OnCurrentScoreChangedDelegate.Broadcast();
 	}
+	Cast<ABGameStateBase>(GetWorld()->GetGameState())
+	->AddScoreByType(EBElementType::Productivity, -Cast<ABElement>(GetOwner())->MoveConsume);
 }
 
 // Sets default values for this component's properties

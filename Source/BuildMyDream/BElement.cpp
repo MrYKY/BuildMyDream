@@ -9,6 +9,8 @@ ABElement::ABElement()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	// Root = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Root"));
+	// RootComponent = Root;
 	ElementMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoardMesh"));
 	ActHandlerComponent = CreateDefaultSubobject<UBActHandlerComponent>(TEXT("ActHandlerComponent"));
 	// Randomly set the ElementType by StageInfo in GameState
@@ -67,6 +69,8 @@ void ABElement::SetElementLevel(int NewLevel)
 {
 	Level = NewLevel;
 	CurrentScore = Level * Level2ScoreRatio;
+	OnCurrentScoreChangedDelegate.Broadcast();
+	MoveConsume = Level2MoveConsumeMap[Level];
 }
 
 
@@ -76,6 +80,7 @@ void ABElement::BeginPlay()
 	Super::BeginPlay();
 	SetElementMesh();
 	SetElementLevel(Cast<ABGameStateBase>(GetWorld()->GetGameState())->ElementLevelMap[ElementType]);
+
 	
 }
 

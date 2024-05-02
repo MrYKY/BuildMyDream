@@ -12,6 +12,7 @@ ABGameModeBase::ABGameModeBase()
 	DefaultPawnClass = nullptr;
 	OnMoveMadeDelegate.AddDynamic(this, &ABGameModeBase::OnMoveMade);
 	OnMergeMadeDelegate.AddDynamic(this, &ABGameModeBase::OnMergeMade);
+	OnStartButtonClickedDelegate.AddDynamic(this, &ABGameModeBase::StartGame);
 }
 
 void ABGameModeBase::OnMoveMade(ABElement* MovedElement)
@@ -38,6 +39,10 @@ void ABGameModeBase::StartGame()
 		Element->SetElementMesh();
 		
 	}
+}
+
+void ABGameModeBase::GameOver()
+{
 }
 
 void ABGameModeBase::BeginPlay()

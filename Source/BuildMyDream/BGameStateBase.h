@@ -11,12 +11,17 @@
  * 
  */
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnResourceChanged);
+
 UCLASS()
 class BUILDMYDREAM_API ABGameStateBase : public AGameStateBase
 {
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(BlueprintAssignable, Category = "GameState")
+	FOnResourceChanged OnResourceChangedDelegate;
+	
 	UPROPERTY(BlueprintReadOnly, Category = "GameState")
 	int32 ProductivityIndex=20;
 	UPROPERTY(BlueprintReadOnly, Category = "GameState")

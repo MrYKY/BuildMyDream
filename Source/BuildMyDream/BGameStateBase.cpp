@@ -2,6 +2,7 @@
 
 
 #include "BGameStateBase.h"
+#include "BGameModeBase.h"
 
 ABGameStateBase::ABGameStateBase()
 {
@@ -19,12 +20,19 @@ void ABGameStateBase::AddScoreByType(EBElementType ElementType, int32 Score)
 	{
 	case EBElementType::Productivity:
 		ProductivityIndex += Score;
+		OnResourceChangedDelegate.Broadcast();
+		if(ProductivityIndex<=0)
+		{
+			Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->GameOver();
+		}
 		break;
 	case EBElementType::Manpower:
 		ManpowerIndex += Score;
+		OnResourceChangedDelegate.Broadcast();
 		break;
 	case EBElementType::Technology:
 		TechnologyIndex += Score;
+		OnResourceChangedDelegate.Broadcast();
 		break;
 	default:
 		break;
@@ -39,4 +47,5 @@ void ABGameStateBase::SetGameStage(EBGameStage NewGameStage)
 void ABGameStateBase::BeginPlay()
 {
 	Super::BeginPlay();
+	OnResourceChangedDelegate.Broadcast();
 }

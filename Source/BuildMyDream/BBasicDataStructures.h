@@ -13,6 +13,17 @@ enum class EBElementType : uint8
 	End,
 };
 
+// 车辆部件类型
+// Car Part Type
+UENUM(BlueprintType)
+enum class EBCarPartType : uint8
+{
+	Battery,
+	Engine,
+	IntelliDevice,
+	End,
+};
+
 // 基本元素信息
 // Basic Element Info
 USTRUCT(BlueprintType)
@@ -43,5 +54,7 @@ enum class EBGameStage : uint8
 	ComfortStage,
 	OutlookStage,
 };
+
+const TMap<int32,int32> Level2MoveConsumeMap = {{1,1},{2,3},{3,5},{4,9}};
 
 
