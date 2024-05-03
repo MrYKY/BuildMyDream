@@ -26,12 +26,21 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "HUD Setting")
 	TSubclassOf<UUserWidget> BShopUIClass;
 	TObjectPtr<UUserWidget> BShopUI;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HUD Setting")
+	TSubclassOf<UUserWidget> BGameOverUIClass;
+	TObjectPtr<UUserWidget> BGameOverUI;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HUD Setting")
+	TSubclassOf<UUserWidget> BTastSelectUIClass;
+	TObjectPtr<UUserWidget> BTastSelectUI;
 	
 	virtual void DrawHUD() override;
 	virtual void BeginPlay() override;
 	
 	UFUNCTION()
 	void OnStartButtonClicked();
-	
+	UFUNCTION()
+	void OnGameOver();
 	void SwitchUI(TObjectPtr<UUserWidget> NewUI, TObjectPtr<UUserWidget> OldUI);
 };

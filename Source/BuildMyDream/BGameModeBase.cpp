@@ -13,6 +13,7 @@ ABGameModeBase::ABGameModeBase()
 	OnMoveMadeDelegate.AddDynamic(this, &ABGameModeBase::OnMoveMade);
 	OnMergeMadeDelegate.AddDynamic(this, &ABGameModeBase::OnMergeMade);
 	OnStartButtonClickedDelegate.AddDynamic(this, &ABGameModeBase::StartGame);
+	OnGameOverDelegate.AddDynamic(this, &ABGameModeBase::GameOver);
 }
 
 void ABGameModeBase::OnMoveMade(ABElement* MovedElement)

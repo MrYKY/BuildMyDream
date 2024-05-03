@@ -53,8 +53,49 @@ enum class EBGameStage : uint8
 	PowerStage,
 	ComfortStage,
 	OutlookStage,
+	End,
+};
+
+UENUM(BlueprintType)
+enum class EBItemType : uint8
+{
+	Upgrader,
+	Parts,
+	Skill,
+	End,
 };
 
 const TMap<int32,int32> Level2MoveConsumeMap = {{1,1},{2,3},{3,5},{4,9}};
 
+USTRUCT(BlueprintType)
+struct FBItemInfo : public FTableRowBase
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
+	FName ItemID;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
+	EBItemType ItemType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
+	FText ItemName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
+	FText ItemDescription;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
+	int32 ItemTechCost;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
+	UTexture2D* ItemIcon;
+	
+};
 
+USTRUCT(BlueprintType)
+struct FBTask : public FTableRowBase
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Task Info")
+	FName TaskName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Task Info")
+	int32 BatteryLevelNeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Task Info")
+	int32 EngineLevelNeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Task Info")
+	int32 IntelliDeviceLevelNeed;
+};

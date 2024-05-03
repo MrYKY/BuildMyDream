@@ -7,7 +7,6 @@
 #include "BActHandlerComponent.h"
 #include "GameFramework/Actor.h"
 #include "BBasicDataStructures.h"
-#include "Components/WidgetComponent.h"
 #include "BElement.generated.h"
 
 // Delegate Indicates Element is clicked

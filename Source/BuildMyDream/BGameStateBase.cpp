@@ -23,7 +23,7 @@ void ABGameStateBase::AddScoreByType(EBElementType ElementType, int32 Score)
 		OnResourceChangedDelegate.Broadcast();
 		if(ProductivityIndex<=0)
 		{
-			Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->GameOver();
+			Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnGameOverDelegate.Broadcast();
 		}
 		break;
 	case EBElementType::Manpower:
@@ -42,6 +42,22 @@ void ABGameStateBase::AddScoreByType(EBElementType ElementType, int32 Score)
 void ABGameStateBase::SetGameStage(EBGameStage NewGameStage)
 {
 	CurrentGameStage = NewGameStage;
+}
+
+void ABGameStateBase::SetGameTarget(FName GameTargetID)
+{
+	// Get the game target data by targetID from the data table
+	// Use the data to set the game target
+	if(GameTaskTable)
+	{
+		FBTask* GameTaskRow = GameTaskTable->FindRow<FBTask>(GameTargetID, "");
+		if(GameTaskRow)
+		{
+			BatteryLevelNeed = GameTaskRow->BatteryLevelNeed;
+			EngineLevelNeed = GameTaskRow->EngineLevelNeed;
+			IntelliDeviceLevelNeed = GameTaskRow->IntelliDeviceLevelNeed;
+		}
+	}
 }
 
 void ABGameStateBase::BeginPlay()

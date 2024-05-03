@@ -23,23 +23,39 @@ public:
 	FOnResourceChanged OnResourceChangedDelegate;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "GameState")
-	int32 ProductivityIndex=20;
+	int32 ProductivityIndex=5;
 	UPROPERTY(BlueprintReadOnly, Category = "GameState")
 	int32 ManpowerIndex;
 	UPROPERTY(BlueprintReadOnly, Category = "GameState")
 	int32 TechnologyIndex;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
+	int32 BatteryLevelNeed;
+	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
+	int32 EngineLevelNeed;
+	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
+	int32 IntelliDeviceLevelNeed;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
+	int32 CurrentBatteryLevel=0;
+	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
+	int32 CurrentLevelNeed=0;
+	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
+	int32 CurrentIntelliDeviceLevel=0;
 
 	TMap<EBElementType,int32> ElementLevelMap;
 
 	EBGameStage CurrentGameStage=EBGameStage::PowerStage;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stage Info")
-	UDataTable* GameStageInfoTable;
+	UDataTable* GameTaskTable;
 	
 	
 	ABGameStateBase();
 	void AddScoreByType(EBElementType ElementType,int32 Score);
 	void SetGameStage(EBGameStage NewGameStage);
+	UFUNCTION(BlueprintCallable)
+	void SetGameTarget(FName GameTargetID);
 	virtual void BeginPlay() override;
 
 };

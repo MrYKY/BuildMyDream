@@ -19,6 +19,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveMade,ABElement*,MovedElement)
 // Delegate That Indicate A Merge Is Made
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMergeMade,ABElement*,MergedElement);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStartButtonClicked);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameOver);
 UCLASS()
 class BUILDMYDREAM_API ABGameModeBase : public AGameModeBase
 {
@@ -30,6 +31,8 @@ public:
 	FOnMergeMade OnMergeMadeDelegate;
 	UPROPERTY(BlueprintCallable)
 	FOnStartButtonClicked OnStartButtonClickedDelegate;
+	UPROPERTY(BlueprintCallable)
+	FOnGameOver OnGameOverDelegate;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
 	TObjectPtr<ABBoard> Board;
@@ -43,7 +46,7 @@ public:
 	UFUNCTION()
 	virtual void StartGame();
 	
-
+	UFUNCTION()
 	virtual void GameOver();
 
 	virtual void BeginPlay() override;

@@ -17,6 +17,7 @@ void ABHUD::BeginPlay()
 	// Bind Delegates
 
 	Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnStartButtonClickedDelegate.AddDynamic(this, &ABHUD::OnStartButtonClicked);
+	Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnGameOverDelegate.AddDynamic(this, &ABHUD::OnGameOver);
 
 	
 	// Create Widgets
@@ -33,15 +34,24 @@ void ABHUD::BeginPlay()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Creating HUD..."));
 		BHUD = CreateWidget<UUserWidget>(GetWorld(), BHUDClass);
 	}
-	if (BShopUI)
+	if (BShopUIClass)
 	{
 		BShopUI = CreateWidget<UUserWidget>(GetWorld(), BShopUIClass);
+	}
+	if (BGameOverUIClass)
+	{
+		BGameOverUI = CreateWidget<UUserWidget>(GetWorld(), BGameOverUIClass);
 	}
 }
 
 void ABHUD::OnStartButtonClicked()
 {
 	SwitchUI(BHUD, BMainMenu);
+}
+
+void ABHUD::OnGameOver()
+{
+	SwitchUI(BGameOverUI, BHUD);
 }
 
 
