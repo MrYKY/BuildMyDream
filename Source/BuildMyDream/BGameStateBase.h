@@ -23,7 +23,7 @@ public:
 	FOnResourceChanged OnResourceChangedDelegate;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "GameState")
-	int32 ProductivityIndex=5;
+	int32 ProductivityIndex=20;
 	UPROPERTY(BlueprintReadOnly, Category = "GameState")
 	int32 ManpowerIndex;
 	UPROPERTY(BlueprintReadOnly, Category = "GameState")
