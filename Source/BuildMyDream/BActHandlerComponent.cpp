@@ -17,12 +17,12 @@ void UBActHandlerComponent::OnMerged()
 
 void UBActHandlerComponent::OnMoved()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Handle Move Event!"));
-	if(Cast<ABElement>(GetOwner())->CurrentScore > Cast<ABElement>(GetOwner())->Level)
-	{
-		Cast<ABElement>(GetOwner())->CurrentScore--;
-		Cast<ABElement>(GetOwner())->OnCurrentScoreChangedDelegate.Broadcast();
-	}
+	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Handle Move Event!"));
+	// if(Cast<ABElement>(GetOwner())->CurrentScore > Cast<ABElement>(GetOwner())->Level)
+	// {
+	// 	Cast<ABElement>(GetOwner())->CurrentScore--;
+	// 	Cast<ABElement>(GetOwner())->OnCurrentScoreChangedDelegate.Broadcast();
+	// }
 	Cast<ABGameStateBase>(GetWorld()->GetGameState())
 	->AddScoreByType(EBElementType::Productivity, -Cast<ABElement>(GetOwner())->MoveConsume);
 }

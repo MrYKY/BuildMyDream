@@ -14,6 +14,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnElementClicked, int32, Col, int3
 // Delegate Indicates Element is released
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnElementReleased, FVector, Location, ABElement*, Element);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCurrentScoreChanged);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLockedRoundChanged);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLocked);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUnlocked);
 
 // Element Shouldn't Know What It's Board Is. It's Board's responsibility to manage elements.
 UCLASS()
@@ -29,6 +32,15 @@ public:
 	
 	UPROPERTY(BlueprintAssignable, Category="Delegates")
 	FOnCurrentScoreChanged OnCurrentScoreChangedDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Delegates")
+	FOnLockedRoundChanged OnLockedRoundChangedDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Delegates")
+	FOnLocked OnLockedDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Delegates")
+	FOnUnlocked OnUnlockedDelegate;
 
 	// 组件
 	// Components
@@ -48,6 +60,11 @@ public:
 	int32 Col;
 	UPROPERTY(BlueprintReadOnly, Category = "Element Info")
 	int32 Row;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Element Info")
+	bool Movable = true;
+	UPROPERTY(BlueprintReadOnly, Category = "Element Info")
+	int32 LockedRound = 0;
 
 	int32 MoveRange = 1;
 	int32 Level;
@@ -79,6 +96,8 @@ public:
 	void OnClicked();
 	void OnReleased();
 	void UpdateLocation(FVector Location);
+	void LockElement(int32 Round);
+	void UnlockElement();
 
 protected:
 	virtual void BeginPlay() override;

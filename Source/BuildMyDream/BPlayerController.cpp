@@ -39,6 +39,11 @@ void ABPlayerController::OnLeftClick()
 			ABElement* Element = Cast<ABElement>(ClickedActor);
 			if (Element)
 			{
+				if(!Element->Movable)
+				{
+					Element->OnClicked();
+					return;
+				}
 				Element->OnClicked();
 				bIsDragging = true;
 				DraggingPiece = Element;
@@ -67,7 +72,7 @@ void ABPlayerController::OnLeftRelease()
 			ABElement* Element = Cast<ABElement>(ClickedActor);
 			if (Element)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Hit Actor Is Element"));
+				// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Hit Actor Is Element"));
 				Element->OnReleased();
 			}
 		}

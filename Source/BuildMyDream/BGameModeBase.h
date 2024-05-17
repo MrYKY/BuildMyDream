@@ -36,6 +36,15 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
 	TObjectPtr<ABBoard> Board;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
+	int32 GameMaxRound = 100;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
+	int32 GameRound = 0;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
+	double MalFunctionProb = 0.15;
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void OnMoveMade(ABElement* MovedElement);
@@ -48,6 +57,9 @@ public:
 	
 	UFUNCTION()
 	virtual void GameOver();
+
+	UFUNCTION()
+	void IncreaseGameRound(ABElement* MovedElement);
 
 	virtual void BeginPlay() override;
 };

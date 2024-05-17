@@ -5,6 +5,7 @@
 
 #include "BElement.h"
 #include "BGameModeBase.h"
+#include "Tasks/Task.h"
 
 // Sets default values
 ABBoard::ABBoard()
@@ -22,6 +23,9 @@ void ABBoard::BeginPlay()
 {
 	Super::BeginPlay();
 	GameMode = Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode());
+	GameMode->OnMoveMadeDelegate.AddDynamic(this, &ABBoard::UpdateAllElementScore);
+	GameMode->OnMoveMadeDelegate.AddDynamic(this, &ABBoard::UpdateAllElementLockRound);
+	
 	
 }
 
@@ -42,7 +46,7 @@ AActor* ABBoard::GenerateElementCell(int32 Row, int32 Col)
 		// Record Element in the Board
 		BoardArray[Row][Col] = Element;
 		--EmptyCellCount;
-		TryMerge(Element,true);
+		// TryMerge(Element,true); // 后续确定类型后再进行消除尝试。
 		return Element;
 	}else
 	{
@@ -62,7 +66,11 @@ AActor* ABBoard::GenerateElement()
 			{
 				if (i == Index)
 				{
-					return GenerateElementCell(Row, Col);
+					AActor* NewElement =  GenerateElementCell(Row, Col);
+					ABElement* Element = Cast<ABElement>(NewElement);
+					Element->SetElementMesh();
+					TryMerge(Element,true);
+					return Element;
 				}
 				++i;
 			}
@@ -71,6 +79,35 @@ AActor* ABBoard::GenerateElement()
 	return nullptr;
 }
 
+AActor* ABBoard::GenerateElementType(EBElementType Type)
+{
+	int32 Index = FMath::RandRange(1, EmptyCellCount);
+	int32 i = 1;
+	for (int32 Row = 1; Row <= BoardSize; ++Row)
+	{
+		for (int32 Col = 1; Col <= BoardSize; ++Col)
+		{
+			if (BoardArray[Row-1][Col-1] == nullptr)
+			{
+				if (i == Index)
+				{
+					AActor* NewElement =  GenerateElementCell(Row, Col);
+					ABElement* Element = Cast<ABElement>(NewElement);
+					Element->SetElementType(Type);
+					Element->SetElementMesh();
+					if (Type == EBElementType::Malfunction)
+					{
+						Element->LockElement(100000);
+					}
+					TryMerge(Element,true);
+					return Element;
+				}
+				++i;
+			}
+		}
+	}
+	return nullptr;
+}
 
 bool ABBoard::RemoveElement(int32 Row, int32 Col)
 {
@@ -78,7 +115,7 @@ bool ABBoard::RemoveElement(int32 Row, int32 Col)
 	--Col;
 	if (BoardArray[Row][Col] != nullptr)
 	{
-		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Element Removed"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Element Removed"));
 		BoardArray[Row][Col] = nullptr;
 		++EmptyCellCount;
 		return true;
@@ -119,7 +156,7 @@ bool ABBoard::PutElement(FVector Location, ABElement* Element)
 			SetElementLocation(PElement);
 			TryMerge(PElement, true);
 			return true;
-		}else
+		}else if(BoardArray[Row][Col]->Movable)
 		{
 			TObjectPtr<ABElement> SwitchedElement = BoardArray[Row][Col];
 			BoardArray[Row][Col] = PElement;
@@ -137,10 +174,17 @@ bool ABBoard::PutElement(FVector Location, ABElement* Element)
 			TryMerge(PElement, true);
 			TryMerge(SwitchedElement, true);
 			return true;
+		}else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("SwitchedElement Can't Be Moved"));
+			BoardArray[PElement->Row-1][PElement->Col-1] = PElement;
+			SetElementLocation(PElement);
+			return false;
 		}
 	}else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Can't Put On This Place"));
+		BoardArray[PElement->Row-1][PElement->Col-1] = PElement;
 		SetElementLocation(PElement);
 		return false;
 	}
@@ -149,6 +193,71 @@ bool ABBoard::PutElement(FVector Location, ABElement* Element)
 void ABBoard::PutElementRes(FVector Location, ABElement* Element)
 {
 	PutElement(Location, Element);
+}
+
+void ABBoard::LockRandomElement()
+{
+	int32 OccupiedCellCount = BoardSize * BoardSize - EmptyCellCount;
+	int32 rand = FMath::RandRange(1, OccupiedCellCount);
+	int32 i = 1;
+	for (int32 Row = 1; Row <= BoardSize; ++Row)
+	{
+		for (int32 Col = 1; Col <= BoardSize; ++Col)
+		{
+			if (BoardArray[Row-1][Col-1] != nullptr )
+			{
+				if (i == rand && BoardArray[Row-1][Col-1]->ElementType!=EBElementType::Malfunction)
+				{
+					BoardArray[Row-1][Col-1]->LockElement(5);
+					return;
+				}else
+				{
+					++i;
+				}
+			}
+		}
+	}
+}
+
+void ABBoard::UpdateAllElementScore(ABElement* MovedElement)
+{
+	for (int32 Row = 1; Row <= BoardSize; ++Row)
+	{
+		for (int32 Col = 1; Col <= BoardSize; ++Col)
+		{
+			if (BoardArray[Row-1][Col-1] != nullptr )
+			{
+				if(BoardArray[Row-1][Col-1]->CurrentScore > BoardArray[Row-1][Col-1]->Level)
+				{
+					BoardArray[Row-1][Col-1]->CurrentScore--;
+					BoardArray[Row-1][Col-1]->OnCurrentScoreChangedDelegate.Broadcast();
+				}
+			}
+		}
+	}
+}
+
+void ABBoard::UpdateAllElementLockRound(ABElement* MovedElement)
+{
+	for (int32 Row = 1; Row <= BoardSize; ++Row)
+	{
+		for (int32 Col = 1; Col <= BoardSize; ++Col)
+		{
+			if (BoardArray[Row-1][Col-1] != nullptr )
+			{
+				if(BoardArray[Row-1][Col-1]->LockedRound > 0)
+				{
+					BoardArray[Row-1][Col-1]->LockedRound--;
+					BoardArray[Row-1][Col-1]->OnLockedRoundChangedDelegate.Broadcast();
+				}
+				if(BoardArray[Row-1][Col-1]->LockedRound==0)
+				{
+					BoardArray[Row-1][Col-1]->UnlockElement();
+					TryMerge(BoardArray[Row-1][Col-1],true);
+				}
+			}
+		}
+	}
 }
 
 TArray<int32> ABBoard::GetRowColByLocation(FVector Location) const
@@ -198,7 +307,7 @@ bool ABBoard::TryMerge(TObjectPtr<ABElement> Element, bool bFirstCall)
 		{
 			if (BoardArray[NewRow][NewCol] && !Visited[NewRow][NewCol])
 			{
-				if (BoardArray[NewRow][NewCol]->ElementType == ElementType)
+				if (BoardArray[NewRow][NewCol]->ElementType == ElementType && BoardArray[NewRow][NewCol]->Movable)
 				{
 					Visited[NewRow][NewCol] = true;
 					TryMerge(BoardArray[NewRow][NewCol], false);

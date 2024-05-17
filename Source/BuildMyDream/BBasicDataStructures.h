@@ -10,6 +10,7 @@ enum class EBElementType : uint8
 	Productivity,
 	Manpower,
 	Technology,
+	Malfunction,
 	End,
 };
 

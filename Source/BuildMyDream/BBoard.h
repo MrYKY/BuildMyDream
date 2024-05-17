@@ -40,6 +40,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	AActor* GenerateElement();
 
+	UFUNCTION(BlueprintCallable)
+	AActor* GenerateElementType(EBElementType Type);
+
+
 
 	UFUNCTION(BlueprintCallable)
 	bool RemoveElement(int32 Row, int32 Col);
@@ -50,6 +54,12 @@ public:
 	bool PutElement(FVector Location, ABElement* Element);
 	UFUNCTION()
 	void PutElementRes(FVector Location, ABElement* Element);
+	UFUNCTION()
+	void LockRandomElement();
+	UFUNCTION()
+	void UpdateAllElementScore(ABElement* MovedElement);
+	UFUNCTION()
+	void UpdateAllElementLockRound(ABElement* MovedElement);
 
 
 	ABBoard();
@@ -62,7 +72,11 @@ private:
 	void BindDelegates(TObjectPtr<ABElement> Element);
 	void SetElementLocation(TObjectPtr<ABElement> Element);
 	bool TryMerge(TObjectPtr<ABElement> Element,bool bFirstCall);
+	
 
 
 
 };
+
+
+

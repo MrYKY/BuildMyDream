@@ -15,12 +15,19 @@ ABElement::ABElement()
 	ActHandlerComponent = CreateDefaultSubobject<UBActHandlerComponent>(TEXT("ActHandlerComponent"));
 	// Randomly set the ElementType by StageInfo in GameState
 	ElementType = static_cast<EBElementType>(FMath::RandRange(0, 2));
+	
 }
 
 
 void ABElement::OnClicked()
 {
 	// Board->RemoveElement(Row,Col);
+	if(!Movable)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Element is locked"));
+		return;
+	}
+	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Mouse Clicked On Element"));
 	OnElementClickedDelegate.Broadcast(Row,Col);
 	// FVector NewLocation(GetActorLocation().X, GetActorLocation().Y+100.0f, GetActorLocation().Z);
 	// SetActorLocation(NewLocation);
@@ -30,12 +37,30 @@ void ABElement::OnReleased()
 {
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MouseRealsed"));
 	// Board->PutElement(GetActorLocation(), this);
+	if(!Movable)
+	{
+		return;
+	}
 	OnElementReleasedDelegate.Broadcast(GetActorLocation(), this);
 }
 
 void ABElement::UpdateLocation(FVector Location)
 {
 	SetActorLocation(Location);
+}
+
+void ABElement::LockElement(int32 Round)
+{
+	LockedRound = Round;
+	Movable = false;
+	OnLockedDelegate.Broadcast();
+}
+
+void ABElement::UnlockElement()
+{
+	LockedRound = 0;
+	Movable = true;
+	OnUnlockedDelegate.Broadcast();
 }
 
 void ABElement::SetElementType(EBElementType NewType)

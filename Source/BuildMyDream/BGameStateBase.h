@@ -22,11 +22,11 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "GameState")
 	FOnResourceChanged OnResourceChangedDelegate;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "GameState")
+	UPROPERTY(BlueprintReadWrite,Category = "GameState")
 	int32 ProductivityIndex=20;
-	UPROPERTY(EditDefaultsOnly, Category = "GameState")
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
 	int32 ManpowerIndex;
-	UPROPERTY(EditDefaultsOnly, Category = "GameState")
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
 	int32 TechnologyIndex;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Task Info")
