@@ -22,18 +22,18 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "GameState")
 	FOnResourceChanged OnResourceChangedDelegate;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "GameState")
+	UPROPERTY(EditDefaultsOnly, Category = "GameState")
 	int32 ProductivityIndex=20;
-	UPROPERTY(BlueprintReadOnly, Category = "GameState")
+	UPROPERTY(EditDefaultsOnly, Category = "GameState")
 	int32 ManpowerIndex;
-	UPROPERTY(BlueprintReadOnly, Category = "GameState")
+	UPROPERTY(EditDefaultsOnly, Category = "GameState")
 	int32 TechnologyIndex;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
+	UPROPERTY(EditDefaultsOnly, Category = "Task Info")
 	int32 BatteryLevelNeed;
-	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
+	UPROPERTY(EditDefaultsOnly, Category = "Task Info")
 	int32 EngineLevelNeed;
-	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
+	UPROPERTY(EditDefaultsOnly, Category = "Task Info")
 	int32 IntelliDeviceLevelNeed;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
