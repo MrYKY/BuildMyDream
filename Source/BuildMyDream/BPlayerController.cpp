@@ -2,6 +2,8 @@
 
 
 #include "BPlayerController.h"
+
+#include "BBoard.h"
 #include "BElement.h"
 
 void ABPlayerController::BeginPlay()
@@ -29,8 +31,28 @@ void ABPlayerController::OnLeftClick()
 	{
 		return;
 	}
+	if(bCastingSkill)
+	{
+		FHitResult HitResult;
+		GetHitResultUnderCursor(ECC_WorldStatic, false, HitResult);
+		if (HitResult.bBlockingHit)
+		{
+			AActor* ClickedActor = HitResult.GetActor();
+			if (ClickedActor)
+			{
+				ABBoard* HitBoard = Cast<ABBoard>(ClickedActor);
+				if (HitBoard)
+				{
+					TArray<int32> RowCol =  HitBoard->GetRowColByLocation(HitResult.Location);
+					OnCastingSkillPointGetDelegate.Broadcast(RowCol);
+				}
+			}
+		}
+		
+		return;
+	}
 	FHitResult HitResult;
-	GetHitResultUnderCursor(ECC_Visibility, false, HitResult); // 获取鼠标光标下的命中结果
+	GetHitResultUnderCursor(ECC_WorldDynamic, false, HitResult); // 获取鼠标光标下的命中结果
 	if (HitResult.bBlockingHit)
 	{
 		AActor* ClickedActor = HitResult.GetActor();
@@ -62,7 +84,7 @@ void ABPlayerController::OnLeftRelease()
 	bIsDragging = false;
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	FHitResult HitResult;
-	GetHitResultUnderCursor(ECC_Visibility, false, HitResult); // 获取鼠标光标下的命中结果
+	GetHitResultUnderCursor(ECC_WorldDynamic, false, HitResult); // 获取鼠标光标下的命中结果
 	if (HitResult.bBlockingHit)
 	{
 		AActor* ClickedActor = HitResult.GetActor();

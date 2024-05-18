@@ -64,11 +64,11 @@ public:
 
 	ABBoard();
 	virtual void Tick(float DeltaTime) override;
+	TArray<int32> GetRowColByLocation(FVector Location) const;
 
 	
 private:
 	void GenerateBoard();
-	TArray<int32> GetRowColByLocation(FVector Location) const;
 	void BindDelegates(TObjectPtr<ABElement> Element);
 	void SetElementLocation(TObjectPtr<ABElement> Element);
 	bool TryMerge(TObjectPtr<ABElement> Element,bool bFirstCall);
