@@ -58,11 +58,11 @@ void ABShop::UpdateItem()
 	FBItemInfo* RowInfoPtr;
 	RowInfoPtr = SkillItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), SkillItemIndex)), TEXT(""));
 	if(RowInfoPtr) CurrentShopItems[0] = *RowInfoPtr;
-	RowInfoPtr = SkillItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), BatteryItemIndex)), TEXT(""));
+	RowInfoPtr = BatteryItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), BatteryItemIndex)), TEXT(""));
 	if(RowInfoPtr) CurrentShopItems[1] = *RowInfoPtr;
-	RowInfoPtr = SkillItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), EngineItemIndex)), TEXT(""));
+	RowInfoPtr = EngineItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), EngineItemIndex)), TEXT(""));
 	if(RowInfoPtr) CurrentShopItems[2] = *RowInfoPtr;
-	RowInfoPtr = SkillItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), IntelliDeviceItemIndex)), TEXT(""));
+	RowInfoPtr = IntelliDeviceItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), IntelliDeviceItemIndex)), TEXT(""));
 	if(RowInfoPtr) CurrentShopItems[3] = *RowInfoPtr;
 	Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnItemUpdatedDelegate.Broadcast();
 }
