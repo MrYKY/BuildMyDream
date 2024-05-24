@@ -58,12 +58,16 @@ void ABShop::UpdateItem()
 	FBItemInfo* RowInfoPtr;
 	RowInfoPtr = SkillItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), SkillItemIndex)), TEXT(""));
 	if(RowInfoPtr) CurrentShopItems[0] = *RowInfoPtr;
+	else CurrentShopItems[0].ItemType = EBItemType::End;
 	RowInfoPtr = BatteryItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), BatteryItemIndex)), TEXT(""));
 	if(RowInfoPtr) CurrentShopItems[1] = *RowInfoPtr;
+	else CurrentShopItems[1].ItemType = EBItemType::End;
 	RowInfoPtr = EngineItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), EngineItemIndex)), TEXT(""));
 	if(RowInfoPtr) CurrentShopItems[2] = *RowInfoPtr;
+	else CurrentShopItems[2].ItemType = EBItemType::End;
 	RowInfoPtr = IntelliDeviceItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), IntelliDeviceItemIndex)), TEXT(""));
 	if(RowInfoPtr) CurrentShopItems[3] = *RowInfoPtr;
+	else CurrentShopItems[3].ItemType = EBItemType::End;
 	Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnItemUpdatedDelegate.Broadcast();
 }
 
