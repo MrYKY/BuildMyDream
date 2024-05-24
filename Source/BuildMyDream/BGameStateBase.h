@@ -36,11 +36,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Task Info")
 	int32 IntelliDeviceLevelNeed;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
+	UPROPERTY(BlueprintReadWrite, Category = "Task Info")
 	int32 CurrentBatteryLevel=0;
-	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
-	int32 CurrentLevelNeed=0;
-	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
+	UPROPERTY(BlueprintReadWrite, Category = "Task Info")
+	int32 CurrentEngineLevel=0;
+	UPROPERTY(BlueprintReadWrite, Category = "Task Info")
 	int32 CurrentIntelliDeviceLevel=0;
 
 	TMap<EBElementType,int32> ElementLevelMap;

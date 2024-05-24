@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BElement.h"
+#include "BShop.h"
 #include "GameFramework/GameModeBase.h"
 #include "BGameModeBase.generated.h"
 
@@ -14,10 +15,8 @@
 
 
 class ABBoard;
-// Delegete That Indicate A Move Is Made
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveMade,ABElement*,MovedElement);
-// Delegate That Indicate A Merge Is Made
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMergeMade,ABElement*,MergedElement);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActMade,ABElement*, MergedElement);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStartButtonClicked);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameOver);
 UCLASS()
@@ -27,12 +26,16 @@ class BUILDMYDREAM_API ABGameModeBase : public AGameModeBase
 
 	ABGameModeBase();
 public:
-	FOnMoveMade OnMoveMadeDelegate;
-	FOnMergeMade OnMergeMadeDelegate;
+	FOnActMade OnMoveMadeDelegate;
+	FOnActMade OnMergeMadeDelegate;
 	UPROPERTY(BlueprintCallable)
 	FOnStartButtonClicked OnStartButtonClickedDelegate;
 	UPROPERTY(BlueprintCallable)
 	FOnGameOver OnGameOverDelegate;
+	UPROPERTY(BlueprintAssignable,BlueprintCallable)
+	FOnStartButtonClicked OnItemBoughtDelegate;
+	UPROPERTY(BlueprintAssignable,BlueprintCallable)
+	FOnStartButtonClicked OnItemUpdatedDelegate;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
 	TObjectPtr<ABBoard> Board;
@@ -45,6 +48,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
 	double MalFunctionProb = 0.15;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Shop")
+	TObjectPtr<ABShop> Shop;
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void OnMoveMade(ABElement* MovedElement);

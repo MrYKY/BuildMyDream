@@ -60,7 +60,6 @@ enum class EBGameStage : uint8
 UENUM(BlueprintType)
 enum class EBItemType : uint8
 {
-	Upgrader,
 	Parts,
 	Skill,
 	End,
@@ -77,13 +76,21 @@ struct FBItemInfo : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
 	EBItemType ItemType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
+	EBCarPartType CarPartType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
+	int32 PartLevel;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
 	FText ItemName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
 	FText ItemDescription;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
 	int32 ItemTechCost;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
+	int32 PartProductivityCost;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
 	UTexture2D* ItemIcon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
+	UStaticMesh* PartMesh;
 	
 };
 
