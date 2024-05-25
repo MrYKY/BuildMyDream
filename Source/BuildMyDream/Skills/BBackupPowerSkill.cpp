@@ -3,6 +3,8 @@
 
 #include "BBackupPowerSkill.h"
 
+#include "BuildMyDream/BGameModeBase.h"
+
 
 // Sets default values
 ABBackupPowerSkill::ABBackupPowerSkill()
@@ -19,6 +21,7 @@ bool ABBackupPowerSkill::ApplySkill()
 			&& !Board->BoardArray[SkillTargetRowCol[0]-1][SkillTargetRowCol[1]-1]->Movable)
 		{
 			Board->BoardArray[SkillTargetRowCol[0]-1][SkillTargetRowCol[1]-1]->UnlockElement();
+			Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnSkillCastedDelegate.Broadcast();
 			return true;
 		}
 	}

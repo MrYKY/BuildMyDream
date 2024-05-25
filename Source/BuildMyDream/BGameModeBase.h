@@ -26,16 +26,25 @@ class BUILDMYDREAM_API ABGameModeBase : public AGameModeBase
 
 	ABGameModeBase();
 public:
+	UPROPERTY(BlueprintAssignable,BlueprintCallable)
 	FOnActMade OnMoveMadeDelegate;
+	UPROPERTY(BlueprintAssignable,BlueprintCallable)
 	FOnActMade OnMergeMadeDelegate;
-	UPROPERTY(BlueprintCallable)
+	UPROPERTY(BlueprintAssignable,BlueprintCallable)
+	FOnStartButtonClicked OnElementLiftedDelegate;
+	UPROPERTY(BlueprintAssignable,BlueprintCallable)
 	FOnStartButtonClicked OnStartButtonClickedDelegate;
-	UPROPERTY(BlueprintCallable)
+	UPROPERTY(BlueprintAssignable,BlueprintCallable)
 	FOnGameOver OnGameOverDelegate;
 	UPROPERTY(BlueprintAssignable,BlueprintCallable)
 	FOnStartButtonClicked OnItemBoughtDelegate;
 	UPROPERTY(BlueprintAssignable,BlueprintCallable)
 	FOnStartButtonClicked OnItemUpdatedDelegate;
+	UPROPERTY(BlueprintAssignable,BlueprintCallable)
+	FOnStartButtonClicked OnSkillCastedDelegate;
+	UPROPERTY(BlueprintAssignable,BlueprintCallable)
+	FOnStartButtonClicked OnTargetPutDelegate;
+	
 
 	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
 	TObjectPtr<ABBoard> Board;

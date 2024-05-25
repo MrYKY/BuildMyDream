@@ -14,6 +14,7 @@ class BUILDMYDREAM_API ABDebugSkill : public ABSkillBase
 public:
 	// Sets default values for this actor's properties
 	ABDebugSkill();
+	virtual bool ApplySkill() override;
 
 protected:
 	// Called when the game starts or when spawned

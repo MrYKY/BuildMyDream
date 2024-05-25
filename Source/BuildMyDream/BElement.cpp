@@ -2,6 +2,8 @@
 
 
 #include "BElement.h"
+
+#include "BGameModeBase.h"
 #include "BGameStateBase.h"
 #include "GameFramework/GameModeBase.h"
 
@@ -29,6 +31,7 @@ void ABElement::OnClicked()
 	}
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Mouse Clicked On Element"));
 	OnElementClickedDelegate.Broadcast(Row,Col);
+	Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnElementLiftedDelegate.Broadcast();
 	// FVector NewLocation(GetActorLocation().X, GetActorLocation().Y+100.0f, GetActorLocation().Z);
 	// SetActorLocation(NewLocation);
 }

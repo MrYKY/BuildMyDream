@@ -3,6 +3,8 @@
 
 #include "BConveyerSkill.h"
 
+#include "BuildMyDream/BGameModeBase.h"
+
 
 // Sets default values
 ABConveyerSkill::ABConveyerSkill()
@@ -19,6 +21,7 @@ bool ABConveyerSkill::ApplySkill()
 			&& Board->BoardArray[SkillTargetRowCol[0]-1][SkillTargetRowCol[1]-1]->Movable)
 		{
 			Board->BoardArray[SkillTargetRowCol[0]-1][SkillTargetRowCol[1]-1]->MoveRange=3;
+			Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnSkillCastedDelegate.Broadcast();
 			return true;
 		}
 	}

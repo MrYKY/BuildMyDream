@@ -3,6 +3,8 @@
 
 #include "BAddPartsFakeSkill.h"
 
+#include "BuildMyDream/BGameModeBase.h"
+
 
 // Sets default values
 ABAddPartsFakeSkill::ABAddPartsFakeSkill()
@@ -24,6 +26,7 @@ bool ABAddPartsFakeSkill::ApplySkill()
 		ABElement* Part = Cast<ABElement>(Board->GenerateElementCell(SkillTargetRowCol[0],SkillTargetRowCol[1]));
 		Part->SetElementType(EBElementType::End);
 		Part->ElementMesh->SetStaticMesh(PartInfo.PartMesh);
+		Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnTargetPutDelegate.Broadcast();
 		return true;
 	}else
 	{
