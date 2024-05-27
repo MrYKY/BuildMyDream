@@ -29,18 +29,18 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "GameState")
 	int32 TechnologyIndex;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Task Info")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,Category = "Task Info")
 	int32 BatteryLevelNeed;
-	UPROPERTY(EditDefaultsOnly, Category = "Task Info")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Task Info")
 	int32 EngineLevelNeed;
-	UPROPERTY(EditDefaultsOnly, Category = "Task Info")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,Category = "Task Info")
 	int32 IntelliDeviceLevelNeed;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Task Info")
+	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
 	int32 CurrentBatteryLevel=0;
-	UPROPERTY(BlueprintReadWrite, Category = "Task Info")
+	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
 	int32 CurrentEngineLevel=0;
-	UPROPERTY(BlueprintReadWrite, Category = "Task Info")
+	UPROPERTY(BlueprintReadOnly, Category = "Task Info")
 	int32 CurrentIntelliDeviceLevel=0;
 
 	TMap<EBElementType,int32> ElementLevelMap;

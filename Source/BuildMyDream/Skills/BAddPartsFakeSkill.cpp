@@ -26,6 +26,20 @@ bool ABAddPartsFakeSkill::ApplySkill()
 		ABElement* Part = Cast<ABElement>(Board->GenerateElementCell(SkillTargetRowCol[0],SkillTargetRowCol[1]));
 		Part->SetElementType(EBElementType::End);
 		Part->ElementMesh->SetStaticMesh(PartInfo.PartMesh);
+		switch (PartInfo.CarPartType)
+		{
+		case EBCarPartType::Battery:
+			GameState->CurrentBatteryLevel++;
+			break;
+		case EBCarPartType::Engine:
+			GameState->CurrentEngineLevel++;
+			break;
+		case EBCarPartType::IntelliDevice:
+			GameState->CurrentIntelliDeviceLevel++;
+			break;
+		default:
+			break;
+		}
 		Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnTargetPutDelegate.Broadcast();
 		return true;
 	}else
