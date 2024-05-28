@@ -27,14 +27,15 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FBItemInfo> CurrentShopItems;
+	
 
 	UPROPERTY(BlueprintReadOnly)
 	FBItemInfo BoughtItem;
 
-	int32 SkillItemIndex = 0;
-	int32 BatteryItemIndex = 0;
-	int32 EngineItemIndex = 0;
-	int32 IntelliDeviceItemIndex = 0;
+	int32 SkillItemIndex = 1;
+	int32 BatteryItemIndex = 1;
+	int32 EngineItemIndex = 1;
+	int32 IntelliDeviceItemIndex = 1;
 
 
 	// Sets default values for this actor's properties
