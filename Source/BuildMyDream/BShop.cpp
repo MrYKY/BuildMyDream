@@ -16,7 +16,9 @@ ABShop::ABShop()
 // Called when the game starts or when spawned
 void ABShop::BeginPlay()
 {
-	Super::BeginPlay();
+	Super::BeginPlay();	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Shop Created."));
+	CurrentShopItems.SetNum(4);
 	UpdateItem();
 	
 	
@@ -56,8 +58,13 @@ void ABShop::BuyItem(const FBItemInfo& ItemInfo)
 void ABShop::UpdateItem()
 {
 	FBItemInfo* RowInfoPtr;
-	RowInfoPtr = SkillItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), SkillItemIndex)), TEXT(""));
-	if(RowInfoPtr) CurrentShopItems[0] = *RowInfoPtr;
+	RowInfoPtr = SkillItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), SkillItemIndex)), TEXT("Skill Not Found"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Try Read Skill Item."));
+	if(RowInfoPtr)
+	{
+		CurrentShopItems[0] = *RowInfoPtr;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Skill Item Read."));
+	}
 	else CurrentShopItems[0].ItemType = EBItemType::End;
 	RowInfoPtr = BatteryItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), BatteryItemIndex)), TEXT(""));
 	if(RowInfoPtr) CurrentShopItems[1] = *RowInfoPtr;
