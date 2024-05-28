@@ -73,7 +73,6 @@ void ABGameModeBase::IncreaseGameRound(ABElement* MovedElement)
 void ABGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-	const TSubclassOf<ABShop> ShopClass;
 	Shop = GetWorld()->SpawnActor<ABShop>(ShopClass);
 		
 	

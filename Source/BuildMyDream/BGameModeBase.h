@@ -49,7 +49,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
 	TObjectPtr<ABBoard> Board;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Board Setting")
 	int32 GameMaxRound = 100;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
@@ -58,7 +58,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
 	double MalFunctionProb = 0.15;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Shop")
+	UPROPERTY(EditDefaultsOnly,Category = "Shop")
+	TSubclassOf<ABShop> ShopClass;
+
+	UPROPERTY(BlueprintReadOnly,Category = "Shop")
 	TObjectPtr<ABShop> Shop;
 	
 	UFUNCTION(BlueprintCallable)
