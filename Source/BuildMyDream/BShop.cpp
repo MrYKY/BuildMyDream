@@ -4,6 +4,7 @@
 #include "BShop.h"
 
 #include "BGameModeBase.h"
+#include "BGameStateBase.h"
 
 
 // Sets default values
@@ -51,6 +52,8 @@ void ABShop::BuyItem(const FBItemInfo& ItemInfo)
 		break;
 	}
 	BoughtItem = ItemInfo;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Item Bought."));
+	Cast<ABGameStateBase>(GetWorld()->GetGameState())->AddScoreByType(EBElementType::Technology,-BoughtItem.ItemTechCost);
 	UpdateItem();
 	Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnItemBoughtDelegate.Broadcast();
 }
