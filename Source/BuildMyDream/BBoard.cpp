@@ -307,7 +307,8 @@ bool ABBoard::TryMerge(TObjectPtr<ABElement> Element, bool bFirstCall)
 		{
 			if (BoardArray[NewRow][NewCol] && !Visited[NewRow][NewCol])
 			{
-				if (BoardArray[NewRow][NewCol]->ElementType == ElementType && BoardArray[NewRow][NewCol]->Movable)
+				if (BoardArray[NewRow][NewCol]->ElementType == ElementType && BoardArray[NewRow][NewCol]->Movable
+					&& BoardArray[NewRow][NewCol]->ElementType!=EBElementType::End)
 				{
 					Visited[NewRow][NewCol] = true;
 					TryMerge(BoardArray[NewRow][NewCol], false);

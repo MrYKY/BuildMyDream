@@ -42,6 +42,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Delegates")
 	FOnUnlocked OnUnlockedDelegate;
 
+	UPROPERTY(BlueprintAssignable, Category="Delegates")
+	FOnLocked OnTypeSetDelegate;
+
 	// 组件
 	// Components
 	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Board Setting")

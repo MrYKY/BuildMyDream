@@ -69,6 +69,7 @@ void ABElement::UnlockElement()
 void ABElement::SetElementType(EBElementType NewType)
 {
 	ElementType = NewType;
+	OnTypeSetDelegate.Broadcast();
 }
 
 void ABElement::SetElementMesh()

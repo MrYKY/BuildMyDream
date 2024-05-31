@@ -47,12 +47,12 @@ void ABShop::BuyItem(const FBItemInfo& ItemInfo)
 		break;
 	case EBItemType::Skill:
 		SkillItemIndex++;
+		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Skill Item Bought."));
 		break;
 	default:
 		break;
 	}
 	BoughtItem = ItemInfo;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Item Bought."));
 	Cast<ABGameStateBase>(GetWorld()->GetGameState())->AddScoreByType(EBElementType::Technology,-BoughtItem.ItemTechCost);
 	UpdateItem();
 	Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnItemBoughtDelegate.Broadcast();
@@ -62,7 +62,7 @@ void ABShop::UpdateItem()
 {
 	FBItemInfo* RowInfoPtr;
 	RowInfoPtr = SkillItemTable->FindRow<FBItemInfo>(FName(*FString::Printf(TEXT("%d"), SkillItemIndex)), TEXT("Skill Not Found"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Try Read Skill Item."));
+	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Try Read Skill Item."));
 	if(RowInfoPtr)
 	{
 		CurrentShopItems[0] = *RowInfoPtr;
