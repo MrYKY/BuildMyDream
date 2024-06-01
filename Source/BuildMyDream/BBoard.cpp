@@ -325,6 +325,13 @@ bool ABBoard::TryMerge(TObjectPtr<ABElement> Element, bool bFirstCall)
 			for(int32 i = 0; i<MergeArray.Num(); ++i)
 			{
 				RemoveElement(MergeArray[i]->Row, MergeArray[i]->Col);
+				if(i == 0)
+				{
+					AActor* NewElement =  GenerateElementCell(MergeArray[0]->Row, MergeArray[0]->Col);
+					ABElement* ElementStay = Cast<ABElement>(NewElement);
+					ElementStay->SetElementType(MergeArray[0]->ElementType);
+					ElementStay->SetElementMesh();
+				}
 				GameMode->OnMergeMadeDelegate.Broadcast(MergeArray[i]);
 				MergeArray[i]->Destroy();
 			}

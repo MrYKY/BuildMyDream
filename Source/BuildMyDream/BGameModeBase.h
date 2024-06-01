@@ -56,7 +56,7 @@ public:
 	int32 GameRound = 0;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Board Setting")
-	double MalFunctionProb = 0.15;
+	double MalFunctionProb = 0.10;
 
 	UPROPERTY(EditDefaultsOnly,Category = "Shop")
 	TSubclassOf<ABShop> ShopClass;

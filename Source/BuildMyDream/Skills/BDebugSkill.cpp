@@ -18,6 +18,7 @@ bool ABDebugSkill::ApplySkill()
 	if(Super::ApplySkill())
 	{
 		Cast<ABGameModeBase>(GetWorld()->GetAuthGameMode())->OnSkillCastedDelegate.Broadcast();
+		GameState->AddScoreByType(EBElementType::Productivity, 5);
 		return true;
 	}
 	return false;

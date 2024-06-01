@@ -44,15 +44,19 @@ void ABGameModeBase::OnMergeMade(ABElement* MergedElement)
 
 void ABGameModeBase::StartGame()
 {
-	for(int i = 0; i < 3; ++i)
+	for(int k = 0; k < 3; k++)
 	{
-		AActor* NewElement = Board->GenerateElement();
-		ABElement* Element = Cast<ABElement>(NewElement);
-		// Set the i-th type of element
-		Element->ElementType = static_cast<EBElementType>(i);
-		Element->SetElementMesh();
-		
+		for(int i = 0; i < 3; ++i)
+        	{
+        		AActor* NewElement = Board->GenerateElement();
+        		ABElement* Element = Cast<ABElement>(NewElement);
+        		// Set the i-th type of element
+        		Element->ElementType = static_cast<EBElementType>(i);
+        		Element->SetElementMesh();
+        		
+        	}
 	}
+	
 }
 
 void ABGameModeBase::GameOver()
